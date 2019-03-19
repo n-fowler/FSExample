@@ -1,0 +1,50 @@
+How to:
+
+Run tests with "npm test"
+
+Changes made to Data Fetcher:
+
+- module.exports for app
+- Added logMessage function to prevent log messages from showing during test runs
+- Added !module.parent check to fix port 3000 in use error when running tests
+- Fixed typo in log entry for data fetcher listen entry
+
+Changes made to Data Saver:
+
+- module.exports for functions: checkCurrentUsers, getSavedUsers, saveUsers, waitTimeMs
+- Added logMessage function to prevent log messages from showing during test runs
+- Added lastUserCheck return to keep track of when we last checked for new users
+- Renamed currentData to savedUserData
+
+Tests Added:
+
+Frameworks used:
+
+- Mocha (v4 requires --exit in package.json to auto terminate after tests are done)
+- Chai
+- ChaiHttp
+- Sinon (Removed from test for reasons detailed later)
+
+Answers to questions:
+
+1. Can the datafetcher get data from the third-party api successfully?
+
+Yes.  The associated test passes when performing a get request.
+
+2. Can the datasaver save data successfully?
+
+Yes.  The associated test passes when getting the saved users and saving them to the desired location.
+
+3. Are we running on schedule every 30 seconds?
+
+Yes.  The associated test passes after calling checkCurrentUsers and the interval used is equal to 30 seconds.
+Note: I initially started using sinon and faking ticks to simulate time but I was having a lot of issues with consistent results.
+In order to stick to the 3 hour time suggested time limit, I've removed that code.
+
+4. Is the whole system working?
+
+Yes.  One way this can be tested is to mock the data fetchers get request for users to always return more data than what is present in a test users.json file so that the data saver always has data to process.
+
+5. What would you monitor to make sure it was still working, and how might you set that up?
+
+We could monitor to make sure the port is open and the app is processing get requests and keep a simple log of recent requests, as well as monitoring the data saver to see timestamps for the most recent run and when new results were last saved.
